@@ -1,0 +1,42 @@
+\babel@toc {vietnamese}{}\relax 
+\contentsline {section}{MỞ ĐẦU}{3}{chapter*.2}%
+\contentsline {chapter}{\numberline {1}CƠ SỞ LÝ LUẬN VỀ CÔNG NGHIỆP HÓA VÀ CÁCH MẠNG CÔNG NGHIỆP 4.0}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Quan điểm của chủ nghĩa Mác – Lênin về công nghiệp hóa và phát triển lực lượng sản xuất}{5}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Bản chất và đặc trưng cơ bản của Cách mạng công nghiệp 4.0}{6}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Sự phát triển của các phạm trù Kinh tế chính trị trong bối cảnh CMCN 4.0}{7}{section.1.3}%
+\contentsline {chapter}{\numberline {2}TÁC ĐỘNG CỦA CMCN 4.0 ĐẾN QUÁ TRÌNH CÔNG NGHIỆP HÓA, HIỆN ĐẠI HÓA Ở VIỆT NAM}{8}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Tác động tích cực}{8}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Thúc đẩy hiện đại hóa lực lượng sản xuất}{8}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Mở ra cơ hội phát triển kinh tế số}{9}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Tăng khả năng rút ngắn quá trình CNH, HĐH}{9}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}Tác động tiêu cực và thách thức}{9}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Áp lực cạnh tranh và nguy cơ tụt hậu}{9}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Tác động đến cơ cấu lao động}{10}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Gia tăng phụ thuộc công nghệ}{10}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Những yêu cầu phát triển mới đặt ra cho Việt Nam}{10}{section.2.3}%
+\contentsline {chapter}{\numberline {3}THỰC TRẠNG VÀ NHỮNG VẤN ĐỀ ĐẶT RA TRONG TIẾN TRÌNH CÔNG NGHIỆP HÓA, HIỆN ĐẠI HÓA Ở VIỆT NAM}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Thực trạng công nghiệp hóa, hiện đại hóa hiện nay}{12}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Thành tựu và động lực tăng trưởng: công nghiệp chế biến, chế tạo là động lực quan trọng của tăng trưởng}{12}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Chuyển dịch cơ cấu: vừa củng cố vai trò sản xuất công nghiệp, vừa hình thành động lực số}{13}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Bước đầu ứng dụng công nghệ số: thay đổi phương thức sản xuất, quản trị và thị trường}{13}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Những hạn chế trong trình độ lực lượng sản xuất và điều kiện kinh tế - xã hội}{14}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Năng suất lao động còn ở mức khiêm tốn so với khu vực}{14}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Trình độ công nghệ còn phụ thuộc và chưa đồng đều}{14}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Chất lượng nguồn nhân lực chưa đáp ứng yêu cầu mới}{15}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Thể chế và môi trường vận hành còn nhiều điểm nghận}{15}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Những mâu thuẫn và vấn đề nổi bật trong bối cảnh CMCN 4.0}{15}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Mâu thuận giữa yêu cầu hiện đại hóa nhanh với trình độ công nghệ còn hạn chế}{16}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Mâu thuận giữa yêu cầu chuyển đổi số toàn diện với chất lượng nguồn nhân lực chưa tương xứng}{16}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Mâu thuận giữa hội nhập sâu rộng với năng lực cạnh tranh nội địa còn hạn chế}{17}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Mâu thuận giữa yêu cầu đổi mới nhanh của kinh tế số với những điểm nghận thể chế}{17}{subsection.3.3.4}%
+\contentsline {chapter}{\numberline {4}PHƯƠNG HƯỚNG VÀ GIẢI PHÁP GIẢI QUYẾT CÁC VẤN ĐỀ TRONG TIẾN TRÌNH CÔNG NGHIỆP HÓA - HIỆN ĐẠI HÓA}{18}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Phương hướng và Quan điểm chỉ đạo của Đảng và Nhà nước}{18}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Kiên định mục tiêu CNH-HĐH gắn với CMCN 4.0}{18}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Lấy khoa học, công nghệ và đổi mới sáng tạo làm động lực cốt lõi}{19}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Phát huy nội lực kết hợp với ngoại lực và xây dựng nền kinh tế độc lập, tự chủ}{19}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Các giải pháp trọng tâm tháo gỡ mâu thuận trong bối cảnh CMCN 4.0}{20}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Giải pháp đột phá về công nghệ, nâng cao trình độ lực lượng sản xuất}{20}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Giải pháp nâng tầm nguồn nhân lực đáp ứng yêu cầu chuyển đổi số}{20}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Giải pháp nâng cao năng lực cạnh tranh và chủ động hội nhập}{21}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Giải pháp tháo gỡ điểm nghận thể chế, tạo bệ phóng đổi mới sáng tạo}{21}{subsection.4.2.4}%
+\contentsline {section}{KẾT LUẬN}{22}{subsection.4.2.4}%
