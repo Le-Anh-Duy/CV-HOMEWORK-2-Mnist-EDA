@@ -113,7 +113,7 @@
 Thiết lập pipeline tải dữ liệu đồng nhất cho ba bộ MNIST (Digit, Fashion, Pneumonia), chuẩn hóa dữ liệu về cùng định dạng số học, và trình bày thống kê cơ bản để bảo đảm tính so sánh công bằng giữa các tập dữ liệu.
 
 \subsection{Thao tác}
-Sử dụng \texttt{tensorflow.keras.datasets} để tải Digit MNIST và Fashion MNIST, và sử dụng thư viện \texttt{medmnist} để tải trực tiếp tập PneumoniaMNIST (bộ X-quang ngực thuộc MedMNIST v2).\footnote{\url{https://medmnist.com/}} Kích thước ảnh gốc của cả ba bộ dữ liệu là 28\,$\times$\,28 (grayscale) - giá trị điểm ảnh trong khoản [0, 255]; chuẩn hóa giá trị điểm ảnh về dải $[0,1]$ bằng cách chia cho 255. Sau khi tải, tập huấn luyện và tập kiểm tra của mỗi bộ dữ liệu được gộp chung lại với nhau nhằm có cái nhìn toàn diện khi EDA.
+Sử dụng \texttt{tensorflow.keras.datasets} để tải Digit MNIST và Fashion MNIST, và sử dụng thư viện \texttt{medmnist} để tải trực tiếp tập PneumoniaMNIST (bộ X-quang ngực thuộc MedMNIST v2).\footnote{\url{https://medmnist.com/}} Kích thước ảnh gốc của cả ba bộ dữ liệu là 28\,$\times$\,28 (grayscale) - giá trị điểm ảnh trong khoản [0, 255]; chuẩn hóa giá trị điểm ảnh về dải $[0,1]$ bằng cách chia cho 255. Sau khi tải, tập huấn luyện và tập kiểm tra của mỗi bộ dữ liệu được gộp chung lại với nhau nhằm có cái nhìn toàn diện khi EDA. Notebook EDA đầy đủ: \url{https://github.com/Le-Anh-Duy/CV-HOMEWORK-2-Mnist-EDA/blob/main/notebooks/download_data_eda.ipynb}.
 
 \subsection{Thông tin ban đầu của dữ liệu}
 Bảng \ref{tab:raw-dataset-summary} tóm tắt các thông số gốc trước khi chuẩn hóa (kích thước ảnh, số lượng mẫu, số lượng lớp và miền giá trị điểm ảnh). Các giá trị điểm ảnh ban đầu nằm trong dải $[0,255]$ và được chuẩn hóa về $[0,1]$ ở bước tiền xử lý.
