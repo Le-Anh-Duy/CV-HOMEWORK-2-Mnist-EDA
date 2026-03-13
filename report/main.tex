@@ -11,6 +11,7 @@
 \usepackage{geometry}
 \usepackage{amsmath, amssymb, amsfonts}
 \usepackage{graphicx}
+\graphicspath{{../figures/}}
 \usepackage{svg} % Hỗ trợ file SVG
 \usepackage{booktabs}
 \usepackage{float}
@@ -30,6 +31,12 @@
 \geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
 \linespread{1.2} % Giãn dòng 1.2 cho thoáng, dễ đọc
 \setlength{\parskip}{6pt} % Khoảng cách giữa các đoạn văn
+
+% Dùng section làm cấp cao nhất trong lớp report (tránh đánh số 0.x)
+\renewcommand{\thesection}{\arabic{section}}
+
+% Nạp các chỉ số thống kê được sinh tự động từ pipeline EDA
+\input{eda_stats.tex}
 
 \begin{document}
 
@@ -52,7 +59,7 @@
     % Môn học
     {\Large \textbf{BÁO CÁO MÔN HỌC}}\\
     \vspace{0.3cm}
-    {\LARGE \textbf{KINH TẾ CHÍNH TRỊ MÁC - LÊNIN}}
+    {\LARGE \textbf{THỊ GIÁC MÁY TÍNH}}
     
     \vspace{2cm}
 
@@ -67,9 +74,7 @@
     % Đề tài
     \begin{minipage}{0.9\textwidth}
         \centering
-        {\Large \textbf{Nhóm 2 - Chủ đề:}}\\
-        \vspace{0.3cm}
-        {\LARGE \textbf{CUỘC CÁCH MẠNG CÔNG NGHIỆP 4.0 VÀ VẤN ĐỀ CÔNG NGHIỆP HÓA, HIỆN ĐẠI HÓA Ở VIỆT NAM}}
+        {\LARGE \textbf{PHÂN TÍCH THỐNG KÊ CÁC TẬP DỮ LIỆU MNIST}}
     \end{minipage}
 
     \vfill
@@ -80,7 +85,7 @@
         \centering
         {\large \textbf{Giảng viên hướng dẫn:}}
         \vspace{0.3cm}
-        {\large {Giang Thị Trúc Mai}}
+        {\large {TS. Võ Hoài Việt}}
     \end{minipage}
     
     % Thông tin sinh viên và giảng viên
@@ -88,25 +93,7 @@
         \centering
         {\large \textbf{Sinh viên thực hiện:}}\\
         \vspace{0.3cm}
-        \begin{minipage}[t]{0.48\textwidth}
-            \centering
-            \begin{tabular}{ll}
-                Phạm Ngọc Dũng & \textbf{23127003} \\
-                Trần Nguyễn Khải Luân & \textbf{23127006} \\
-                Lê Anh Duy & \textbf{23127011} \\
-                Nguyễn Hoàng Minh Tâm & \textbf{23127017}
-            \end{tabular}
-        \end{minipage}
-        \hfill
-        \begin{minipage}[t]{0.48\textwidth}
-            \centering
-            \begin{tabular}{ll}
-                Nguyễn Bảo Duy & \textbf{23127179} \\
-                Trần Trọng Hiếu & \textbf{23127189} \\
-                Trần Gia Huy & \textbf{23127199} \\
-                Nguyễn Huỳnh Tiến & \textbf{23127494}
-            \end{tabular}
-        \end{minipage}
+        {Lê Anh Duy (23127011)}
     \end{minipage}
     
     \vspace{1.5cm}
@@ -121,287 +108,233 @@
 \tableofcontents
 \newpage
 
-% --- NỘI DUNG CHÍNH ---
+\section{Khởi tạo \& Tiền xử lý}
+\subsection{Mục tiêu}
+Thiết lập pipeline tải dữ liệu đồng nhất cho ba bộ MNIST (Digit, Fashion, Pneumonia), chuẩn hóa dữ liệu về cùng định dạng số học, và trình bày thống kê cơ bản để bảo đảm tính so sánh công bằng giữa các tập dữ liệu.
+
+\subsection{Thao tác}
+Sử dụng \texttt{tensorflow.keras.datasets} để tải Digit MNIST và Fashion MNIST, và sử dụng thư viện \texttt{medmnist} để tải trực tiếp tập PneumoniaMNIST (bộ X-quang ngực thuộc MedMNIST v2).\footnote{\url{https://medmnist.com/}} Kích thước ảnh gốc của cả ba bộ dữ liệu là 28\,$\times$\,28 (grayscale) - giá trị điểm ảnh trong khoản [0, 255]; chuẩn hóa giá trị điểm ảnh về dải $[0,1]$ bằng cách chia cho 255. Sau khi tải, tập huấn luyện và tập kiểm tra của mỗi bộ dữ liệu được gộp chung lại với nhau nhằm có cái nhìn toàn diện khi EDA.
+
+\subsection{Thông tin ban đầu của dữ liệu}
+Bảng \ref{tab:raw-dataset-summary} tóm tắt các thông số gốc trước khi chuẩn hóa (kích thước ảnh, số lượng mẫu, số lượng lớp và miền giá trị điểm ảnh). Các giá trị điểm ảnh ban đầu nằm trong dải $[0,255]$ và được chuẩn hóa về $[0,1]$ ở bước tiền xử lý.
+
+\begin{table}[H]
+    \centering
+    \caption{Tổng quan thông số gốc của các tập dữ liệu (trước chuẩn hóa)}
+    \label{tab:raw-dataset-summary}
+    \begin{tabular}{lrrrrl}
+        \toprule
+        \textbf{Dataset} & \textbf{Train} & \textbf{Test} & \textbf{Classes} & \textbf{Size} & \textbf{Value range} \\
+        \midrule
+        Digit MNIST & 60000 & 10000 & 10 & 28$\times$28 & [0,255] \\
+        Fashion MNIST & 60000 & 10000 & 10 & 28$\times$28 & [0,255] \\
+        PneumoniaMNIST & 4708 & 624 & 2 & 28$\times$28 & [0,255] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Insight}
+Các tập dữ liệu có kích thước ảnh đồng nhất, nhưng số lượng mẫu và số lượng lớp khác nhau.
+
+\section{Khảo sát Phân phối Nhãn}
+\subsection{Mục tiêu}
+Đánh giá độ cân bằng lớp của ba tập dữ liệu và xác định mức độ mất cân bằng nghiêm trọng ở PneumoniaMNIST.
+
+\subsection{Thao tác}
+Đếm số lượng mẫu mỗi lớp và vẽ biểu đồ cột cho từng tập trên cùng một hình (1 hàng, 3 cột). 
+
+\subsection{Insight}
+Digit/Fashion MNIST gần như cân bằng hoàn toàn, trong khi PneumoniaMNIST thể hiện chênh lệch mạnh giữa hai lớp (Hình~\ref{fig:label-distribution}). Tỷ lệ mất cân bằng cần được lưu ý để cân nhắc kỹ thuật \textit{class weighting} hoặc \textit{resampling} trong các mô hình sau.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{label_distribution.png}
+    \caption{Phân phối nhãn của Digit MNIST, Fashion MNIST và PneumoniaMNIST.}
+    \label{fig:label-distribution}
+\end{figure}
+
+\section{Phân tích Phân phối Điểm ảnh}
+\subsection{Mục tiêu}
+So sánh phân phối cường độ điểm ảnh giữa Digit MNIST và PneumoniaMNIST để đánh giá khả năng phân biệt dựa trên độ sáng.
+
+\subsection{Thao tác}
+Vẽ histogram cường độ điểm ảnh cho Digit MNIST, Fashion MNIST và histogram chồng cho PneumoniaMNIST (Normal vs Pneumonia) để quan sát phân phối sáng tối. Bổ sung một biểu đồ tròn riêng cho Digit MNIST nhằm thể hiện tỷ lệ điểm ảnh rơi vào hai đỉnh 0 và 1 so với các giá trị trung gian khác.
+
+\subsection{Insight}
+Ở tập Digit và Fashion thì đa phần pixel là nền (giá trị 0). Phân phối hai đỉnh trong Digit MNIST phản ánh hai miền điểm ảnh: nền tối (pixel gần 0) và nét chữ sáng (pixel gần 1) (Hình~\ref{fig:pixel-histogram} và Hình~\ref{fig:digit-pixel-pie}). Tập Fashion thì lại có các giá trị phân bố đều hơn ở các pixel lớn hơn 0 nhưng không phải là 1 cột rõ ràng như digit, thể hiện trong tập này các chủ thể thường được thể hiện như 1 khối thay vì các nét như tập digit (Hình~\ref{fig:pixel-histogram}). Với PneumoniaMNIST, phân phối thường gần dạng chuông và hai lớp chồng lấn nhiều, cho thấy độ sáng đơn thuần không đủ để phân loại bệnh lý (Hình~\ref{fig:pixel-histogram}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{pixel_histogram_digit_pneumonia.png}
+    \caption{Histogram cường độ điểm ảnh: Digit MNIST, Fashion MNIST, và PneumoniaMNIST (Normal vs Pneumonia).}
+    \label{fig:pixel-histogram}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{digit_pixel_value_pie.png}
+    \caption{Pie chart phân bố giá trị điểm ảnh của Digit MNIST (0/1/khác), nhấn mạnh hai đỉnh tại 0 và 1.}
+    \label{fig:digit-pixel-pie}
+\end{figure}
+
+\section{Phân tích Ảnh Trung bình \& Bản đồ Chênh lệch}
+\subsection{Mục tiêu}
+Khám phá vùng tín hiệu chung của từng lớp thông qua ảnh trung bình, và định vị các vùng khác biệt không gian quan trọng ở PneumoniaMNIST.
+
+\subsection{Thao tác}
+Tính ảnh trung bình cho từng lớp của cả ba tập dữ liệu. Vẽ lưới ảnh trung bình (Digit: 2x5, Fashion: 2x5, Pneumonia: 1x2). Với PneumoniaMNIST, lấy ảnh trung bình của lớp Pneumonia trừ Normal, sau đó vẽ heatmap với bảng màu \texttt{RdBu\_r}.
+
+\subsection{Insight}
+Các ảnh trung bình của Digit/Fashion thể hiện rõ hình dáng đặc trưng theo lớp (Hình~\ref{fig:mean-digit} và Hình~\ref{fig:mean-fashion}). Ở PneumoniaMNIST, heatmap chênh lệch nhấn mạnh vùng phổi hai bên, trong khi vùng tim/giữa ngực có xu hướng trung tính, gợi ý vùng tín hiệu chính cho phân loại (Hình~\ref{fig:mean-pneumonia} và Hình~\ref{fig:pneumonia-diff}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{mean_digit.png}
+    \caption{Ảnh trung bình theo lớp của Digit MNIST.}
+    \label{fig:mean-digit}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{mean_fashion.png}
+    \caption{Ảnh trung bình theo lớp của Fashion MNIST.}
+    \label{fig:mean-fashion}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{mean_pneumonia.png}
+    \caption{Ảnh trung bình của Normal và Pneumonia.}
+    \label{fig:mean-pneumonia}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{pneumonia_difference_heatmap.png}
+    \caption{Heatmap chênh lệch ảnh trung bình (PneumoniaMNIST: Pneumonia - Normal).}
+    \label{fig:pneumonia-diff}
+\end{figure}
+
+\section{Phân tích Đặc trưng Thị giác}
+\subsection{A. Cạnh biên (Canny Edge Detection)}
+\subsubsection*{Mục tiêu}
+Đối chiếu cấu trúc hình dạng giữa Fashion MNIST và PneumoniaMNIST thông qua bản đồ biên, nhằm quan sát mức độ rõ ràng của đường biên vật thể.
+
+Về mặt nguyên lý, Canny tìm biên bằng cách làm trơn ảnh, tính độ lớn gradient $|\nabla I|$ và giữ lại các điểm có biên mạnh sau khi áp dụng ngưỡng kép (hysteresis). Một cách diễn đạt gọn là giữ lại các điểm thỏa $|\nabla I| \ge T_{high}$, và mở rộng qua các điểm lân cận có $T_{low} \le |\nabla I| < T_{high}$.
+
+\subsubsection*{Thao tác}
+Chọn ngẫu nhiên 5 ảnh Digit, 5 ảnh Fashion và 5 ảnh Pneumonia, áp dụng thuật toán \texttt{cv2.Canny()} để trích xuất viền\footnote{\url{https://en.wikipedia.org/wiki/Canny_edge_detector}}. Vẽ lưới 2x15: hàng trên là ảnh gốc, hàng dưới là ảnh biên tương ứng. Các ví dụ mang tính minh họa định tính, giúp so sánh cấu trúc biên giữa các miền dữ liệu.
 
-\section*{MỞ ĐẦU}
-\addcontentsline{toc}{section}{MỞ ĐẦU}
+\subsubsection*{Insight}
+Digit MNIST thể hiện biên sắc nét và gọn, phù hợp với cấu trúc nét viết. Fashion MNIST tạo biên gọn và liên tục, phản ánh hình dạng vật thể rõ rệt. PneumoniaMNIST cho biên nhiễu và phân tán do cấu trúc giải phẫu (xương sườn, mô mềm), hàm ý bài toán y khoa dựa nhiều hơn vào \textit{texture} so với \textit{shape} (Hình~\ref{fig:canny-comparison}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{canny_fashion_pneumonia.png}
+    \caption{So sánh biên Canny giữa Digit MNIST, Fashion MNIST và PneumoniaMNIST.}
+    \label{fig:canny-comparison}
+\end{figure}
+
+\subsection{B. Trích xuất đặc trưng thị giác truyền thống (CV Feature Extraction)}
+\subsubsection*{Mục tiêu}
+Chứng minh sự khác biệt về bản chất tín hiệu giữa ba miền dữ liệu thông qua các đặc trưng thị giác kinh điển: gradient, keypoints và texture.
+
+Các kỹ thuật đều nhằm tóm tắt thông tin thị giác ở dạng vector đặc trưng: HOG đếm histogram hướng gradient theo ô lưới, còn GLCM thống kê tần suất đồng xuất hiện của cặp mức xám để suy ra texture.
+
+\subsubsection*{Thao tác}
+\textbf{HOG:} Chọn một ảnh ngẫu nhiên từ mỗi tập, áp dụng \texttt{skimage.feature.hog} (\textit{visualize=True}) và hiển thị cặp ảnh gốc - HOG.\footnote{\url{https://en.wikipedia.org/wiki/Histogram_of_oriented_gradients}}\\
+\textbf{GLCM:} Với PneumoniaMNIST, tính \textit{Contrast} và \textit{Homogeneity} từ ma trận GLCM cho 200 ảnh Normal và 200 ảnh Pneumonia, sau đó vẽ boxplot so sánh.\footnote{\url{https://en.wikipedia.org/wiki/Co-occurrence_matrix}}
+
+\subsubsection*{Insight}
+HOG visualization cho thấy các cấu trúc gradient rõ ràng ở Digit MNIST và Fashion MNIST, phản ánh việc hai tập dữ liệu này phụ thuộc chủ yếu vào hình dạng và biên của vật thể. Ngược lại, ở PneumoniaMNIST, các đặc trưng HOG kém ổn định hơn, cho thấy thông tin phân biệt lớp nằm nhiều ở texture hơn là cấu trúc biên. Phân tích GLCM cũng cho thấy sự khác biệt texture giữa hai lớp: ảnh Normal có contrast cao hơn trong khi Pneumonia có homogeneity cao hơn, gợi ý rằng các đặc trưng texture có thể đóng vai trò quan trọng trong việc phân biệt hai lớp.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{hog_comparison.png}
+    \caption{So sánh ảnh gốc và ảnh HOG cho mỗi tập dữ liệu.}
+    \label{fig:hog-comparison}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{glcm_boxplot.png}
+    \caption{Boxplot so sánh đặc trưng GLCM (Contrast, Homogeneity) giữa Normal và Pneumonia.}
+    \label{fig:glcm-boxplot}
+\end{figure}
+
+\section{Đánh giá Khả năng Phân tách (t-SNE)}
+\subsection{Mục tiêu}
+Đánh giá mức độ phân tách trong không gian đặc trưng giữa ba tập dữ liệu bằng t-SNE\footnote{\url{https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding}} và định lượng bằng điểm Silhouette.
+
+t-SNE là phương pháp giảm chiều giúp trực quan hóa dữ liệu nhiều chiều bằng cách ánh xạ các điểm dữ liệu xuống không gian 2D, đồng thời cố gắng giữ cho các điểm giống nhau vẫn nằm gần nhau. Nhờ vậy, ta có thể quan sát trực quan cấu trúc cụm của dữ liệu và đánh giá khả năng phân tách giữa các lớp.
+
+\subsection{Thao tác}
+Làm phẳng ảnh thành vector 784 chiều, lấy mẫu ngẫu nhiên đúng 2000 ảnh cho mỗi tập, và chạy t-SNE với 2 thành phần. Trực quan hóa kết quả bằng scatter plot (1 hàng 3 cột). Tính Silhouette Score cho từng tập từ embedding t-SNE.\footnote{\url{https://en.wikipedia.org/wiki/Silhouette_(clustering)}} Việc giảm chiều dùng \texttt{sklearn.manifold.TSNE}, còn hệ số Silhouette tính bằng \texttt{sklearn.metrics.silhouette\_score}.
+
+\subsection{Insight}
+Nhìn trực quan vào biểu đồ t-SNE, Digit MNIST phân tách thành các cụm rải rác rõ rệt, trong khi PneumoniaMNIST hòa trộn thành một khối dữ liệu duy nhất (Hình~\ref{fig:tsne-comparison}). Tuy nhiên, cần lưu ý rằng Silhouette tính trên embedding t-SNE chỉ mang tính tham khảo vì t-SNE không bảo toàn khoảng cách toàn cục; do đó, các điểm số này nên được diễn giải thận trọng.
+
+Trong đó dễ thấy, với tập Digit thì có sự chồng lấn nhiều giữa số 4 và 9 (thể hiện sự khó khăn trong sự phân biệt 2 lớp này). Còn với tập Fashion thì không còn là sự chồng chéo giữa 2 lớp, mà là nhiều lớp hơn (các vật thế có thể có nhiều hình dáng tương đồng nhau).
+
+\textbf{Silhouette Score đạt được:}
+\begin{itemize}
+    \item \textbf{Digit MNIST:} 0.2018
+    \item \textbf{Fashion MNIST:} 0.1776
+    \item \textbf{Pneumonia MNIST:} 0.2357
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{tsne_comparison.png}
+    \caption{So sánh t-SNE của Digit MNIST, Fashion MNIST và Pneumonia MNIST.}
+    \label{fig:tsne-comparison}
+\end{figure}
+
+\section{Đo lường Độ Tương Đồng Cấu Trúc (SSIM)}
+\subsection{Mục tiêu}
+Định lượng mức độ tương đồng cấu trúc giữa các cặp ảnh X-quang để đánh giá mức độ khó của bài toán PneumoniaMNIST\footnote{\url{https://en.wikipedia.org/wiki/Structural_similarity}}.
+
+SSIM đo mức độ giống nhau theo cấu trúc, với công thức chuẩn: $\mathrm{SSIM}(x,y)=\frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}$. Giá trị càng cao càng cho thấy hai ảnh có cấu trúc tương đồng.
+
+\subsection{Thao tác}
+Tính SSIM trung bình giữa 100 cặp Normal-Normal, 100 cặp Pneumonia-Pneumonia và 100 cặp Normal-Pneumonia. In kết quả ra màn hình và chèn vào báo cáo.
+
+\subsection{Insight}
+Ngay cả khi so sánh các ảnh trong cùng một lớp, SSIM của Normal-Normal chỉ đạt 0.5360 và Pneumonia-Pneumonia đạt 0.4361. Điều này phản ánh độ biến thiên (variance) rất cao trong dữ liệu y khoa do sự khác biệt về thể trạng bệnh nhân và điều kiện chụp X-quang. Đặc biệt, lớp Pneumonia có SSIM nội bộ thấp hơn hẳn, cho thấy các vùng tổn thương viêm phổi xuất hiện rất đa dạng và không đồng nhất về mặt cấu trúc.
+
+Điểm SSIM chéo giữa Normal-Pneumonia giảm xuống mức thấp nhất là 0.3422. Điều này cho thấy cấu trúc toàn cục của hai lớp khác nhau, nhưng mức biến thiên nội bộ cao gợi ý rằng các đặc trưng toàn cục đơn giản có thể chưa đủ, và các phương pháp học đặc trưng (feature learning) có thể cần thiết để nắm bắt các tín hiệu tinh tế.
+
+\textbf{SSIM trung bình thu được:}
+\begin{itemize}
+    \item \textbf{Normal-Normal:} 0.5360
+    \item \textbf{Pneumonia-Pneumonia:} 0.4361
+    \item \textbf{Normal-Pneumonia:} 0.3422
+\end{itemize}
+
+\section{Truy tìm Ngoại lai và Ảnh Hỏng}
+\subsection{Mục tiêu}
+Xác định các ảnh bất thường (quá tối hoặc quá sáng) trong PneumoniaMNIST nhằm mô phỏng rủi ro dữ liệu y khoa và đề xuất tiền xử lý.
+
+Về mặt định lượng, z-score được tính theo $z = \frac{x - \mu}{\sigma}$, với $x$ là tổng cường độ điểm ảnh của một ảnh, $\mu$ là trung bình và $\sigma$ là độ lệch chuẩn của toàn bộ tập. Ảnh được xem là ngoại lai khi $|z| \ge 3$ (ngưỡng phổ biến cho ngoại lai cực trị).
+
+\subsection{Thao tác}
+Tính tổng cường độ pixel cho toàn bộ ảnh, sắp xếp và chọn 5 ảnh có tổng thấp nhất và 5 ảnh cao nhất. Tính \textit{z-score} cho mỗi ảnh để định lượng mức độ ngoại lai. Vẽ lưới 2x5 hiển thị các ảnh ngoại lai.
+
+\subsection{Insight}
+Xuất hiện các ảnh quá tối hoặc quá sáng cho thấy dữ liệu có vấn đề về phơi sáng (Hình~\ref{fig:pneumonia-outliers}). Điều này gợi ý cần cân bằng histogram (ví dụ CLAHE) hoặc chuẩn hóa độ tương phản ở giai đoạn huấn luyện.
+
+\textbf{Z-score của các ảnh ngoại lai đại diện:}
+\begin{itemize}
+    \item \textbf{5 ảnh quá tối (Low intensity):} -4.08, -3.79, -3.72, -3.72, -3.65
+    \item \textbf{5 ảnh quá sáng (High intensity):} 4.04, 3.14, 2.94, 2.80, 2.77
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{pneumonia_outliers.png}
+    \caption{10 ảnh ngoại lai (5 ảnh quá tối và 5 ảnh quá sáng) trong PneumoniaMNIST.}
+    \label{fig:pneumonia-outliers}
+\end{figure}
 
-\subsection*{1. Lý do chọn đề tài}
-
-Bước vào thập niên thứ ba của thế kỷ XXI, nhân loại đang chứng kiến những bước tiến nhảy vọt của khoa học và công nghệ, đặc biệt là sự bùng nổ của Cuộc cách mạng công nghiệp lần thứ tư (CMCN 4.0). Cuộc cách mạng này không chỉ đơn thuần là sự cải tiến về mặt kỹ thuật mà đang làm thay đổi căn bản phương thức sản xuất, quản lý và mọi mặt của đời sống kinh tế - xã hội toàn cầu. Đối với Việt Nam, một quốc gia đang trong thời kỳ quá độ lên chủ nghĩa xã hội với xuất phát điểm kinh tế thấp, nhiệm vụ trung tâm và xuyên suốt là phải tiến hành công nghiệp hóa, hiện đại hóa nhằm xây dựng cơ sở vật chất - kỹ thuật cho nền kinh tế độc lập, tự chủ và hội nhập \cite{dangcsvn2021vankin}.
-
-Dưới góc nhìn của Kinh tế chính trị Mác - Lênin, sự phát triển của lực lượng sản xuất là nền tảng quyết định sự thay đổi của các hình thái kinh tế - xã hội. CMCN 4.0 chính là một bước nhảy vọt về chất của lực lượng sản xuất. Do đó, việc nghiên cứu mối quan hệ biện chứng giữa xu thế công nghệ toàn cầu này với thực tiễn công nghiệp hóa, hiện đại hóa tại Việt Nam không chỉ là yêu cầu cấp thiết về mặt thực tiễn nhằm tìm ra con đường đi tắt đón đầu, tránh nguy cơ tụt hậu, mà còn có ý nghĩa lý luận sâu sắc trong việc vận dụng sáng tạo chủ nghĩa Mác - Lênin vào điều kiện cụ thể của đất nước. Xuất phát từ những nhận thức trên, nhóm quyết định chọn đề tài: \textit{Cuộc cách mạng công nghiệp 4.0 và vấn đề công nghiệp hóa, hiện đại hóa ở Việt Nam} làm nội dung nghiên cứu cho bài tiểu luận của mình.
-
-\subsection*{2. Mục tiêu và nhiệm vụ nghiên cứu}
-
-Mục tiêu chung của tiểu luận là làm rõ những vấn đề lý luận và thực tiễn về công nghiệp hóa, hiện đại hóa ở Việt Nam dưới sự tác động của Cuộc cách mạng công nghiệp 4.0, từ đó đề xuất một số phương hướng và giải pháp cơ bản nhằm thúc đẩy quá trình này.
-
-Để đạt được mục tiêu trên, tiểu luận thực hiện các nhiệm vụ cụ thể sau: Thứ nhất, hệ thống hóa cơ sở lý luận của Kinh tế chính trị Mác - Lênin về công nghiệp hóa và bản chất của CMCN 4.0. Thứ hai, phân tích những tác động đa chiều (cả cơ hội và thách thức) của CMCN 4.0 đến nền kinh tế Việt Nam. Thứ ba, đánh giá khách quan thực trạng tiến trình công nghiệp hóa, hiện đại hóa tại Việt Nam hiện nay. Cuối cùng, đề xuất các quan điểm và giải pháp gắn với việc hoàn thiện quan hệ sản xuất và phát triển lực lượng sản xuất.
-
-\subsection*{3. Đối tượng và phạm vi nghiên cứu}
-
-Đối tượng nghiên cứu của tiểu luận là quá trình công nghiệp hóa, hiện đại hóa và sự phát triển của lực lượng sản xuất, quan hệ sản xuất tại Việt Nam dưới lăng kính của Kinh tế chính trị học và sự tác động của CMCN 4.0.
-
-Phạm vi nghiên cứu được giới hạn trong bối cảnh nền kinh tế Việt Nam từ khi bắt đầu tiếp cận với các thành tựu của CMCN 4.0 (chủ yếu từ năm 2021 đến nay), tập trung vào các khía cạnh kinh tế, công nghệ và thể chế chính sách.
-
-\subsection*{4. Phương pháp nghiên cứu}
-
-Tiểu luận được thực hiện dựa trên nền tảng phương pháp luận duy vật biện chứng và duy vật lịch sử của chủ nghĩa Mác - Lênin. Cụ thể, các hiện tượng kinh tế được xem xét trong trạng thái vận động, phát triển không ngừng và có mối liên hệ mật thiết với nhau. Bên cạnh đó, tiểu luận sử dụng kết hợp các phương pháp nghiên cứu chuyên ngành của Kinh tế chính trị như: phương pháp trừu tượng hóa khoa học, phương pháp logic kết hợp với lịch sử, cùng các phương pháp phân tích, tổng hợp, thống kê, và so sánh để làm rõ các luận điểm nghiên cứu.
-
-\subsection*{5. Kết cấu tiểu luận}
-
-Ngoài phần Mở đầu, Kết luận và Danh mục tài liệu tham khảo, nội dung chính của tiểu luận được kết cấu thành 4 chương:
-
-Chương I trình bày cơ sở lý luận về công nghiệp hóa và cách mạng công nghiệp 4.0. Chương II phân tích tác động của CMCN 4.0 đến quá trình công nghiệp hóa, hiện đại hóa ở Việt Nam. Chương III đánh giá thực trạng và những vấn đề đặt ra trong tiến trình công nghiệp hóa, hiện đại hóa ở Việt Nam. Chương IV đề xuất phương hướng và giải pháp giải quyết các vấn đề trong tiến trình CNH--HĐH.
-
-\newpage
-\chapter{CƠ SỞ LÝ LUẬN VỀ CÔNG NGHIỆP HÓA VÀ CÁCH MẠNG CÔNG NGHIỆP 4.0}
-
-\section{Quan điểm của chủ nghĩa Mác – Lênin về công nghiệp hóa và phát triển lực lượng sản xuất}
-
-\textbf{Lực lượng sản xuất và sự thay đổi của các thời đại kinh tế}
-
-Trong hệ thống lý luận của Kinh tế chính trị Mác - Lênin, quy luật quan hệ sản xuất phải phù hợp với trình độ phát triển của lực lượng sản xuất là quy luật kinh tế cơ bản nhất \cite{tran2021kinh}. Lực lượng sản xuất (bao gồm tư liệu sản xuất và người lao động) là yếu tố động nhất, cách mạng nhất. C. Mác từng nhấn mạnh rằng: \textit{``Những thời đại kinh tế khác nhau không phải ở chỗ chúng sản xuất ra cái gì, mà là ở chỗ chúng sản xuất bằng cách nào, với những tư liệu lao động nào''} \cite{mac1974tư}. Như vậy, quá trình công nghiệp hóa, về bản chất lý luận, chính là quá trình cách mạng hóa tư liệu lao động, chuyển từ lao động thủ công với công cụ thô sơ sang lao động sử dụng hệ thống máy móc cơ khí, qua đó tạo ra bước nhảy vọt về chất cho toàn bộ lực lượng sản xuất.
-
-\textbf{Vai trò của khoa học – công nghệ: Trở thành lực lượng sản xuất trực tiếp}
-
-Một trong những dự báo thiên tài của C. Mác từ thế kỷ XIX là cái nhìn vượt thời đại về vai trò của khoa học kỹ thuật. Phân tích nền đại công nghiệp tư bản chủ nghĩa, C. Mác cho rằng, đến một giai đoạn phát triển nhất định, sự sáng tạo ra của cải thực tế sẽ không còn phụ thuộc nhiều vào thời gian lao động trực tiếp, mà phụ thuộc vào trình độ chung của khoa học và sự tiến bộ của kỹ thuật. Tri thức khoa học không còn là yếu tố ngoại sinh mà được vật hóa, kết tinh trực tiếp vào hệ thống máy móc và quy trình sản xuất, qua đó khoa học công nghệ trở thành lực lượng sản xuất trực tiếp. Cơ sở lý luận này là kim chỉ nam để hiểu vì sao các cuộc cách mạng công nghiệp luôn đóng vai trò là động lực định hình lại diện mạo kinh tế thế giới.
-
-\textbf{Tính tất yếu của công nghiệp hóa trong thời kỳ quá độ}
-
-Kế thừa C. Mác, V.I. Lênin đã cụ thể hóa lý luận này vào thực tiễn xây dựng chủ nghĩa xã hội. Ông khẳng định: \textit{``Cơ sở vật chất duy nhất của chủ nghĩa xã hội là nền đại công nghiệp cơ khí, có khả năng cải tổ cả nông nghiệp''} \cite{lenin1976công}. Đối với những quốc gia quá độ lên chủ nghĩa xã hội từ một nền kinh tế tiểu nông, lạc hậu, chưa trải qua giai đoạn phát triển rực rỡ của chủ nghĩa tư bản, việc tiến hành công nghiệp hóa, hiện đại hóa là một tính tất yếu khách quan. Đây là quá trình bắt buộc để tạo ra cơ sở hạ tầng kinh tế - kỹ thuật tương xứng, từ đó thiết lập và củng cố quan hệ sản xuất mới, đảm bảo sự thắng lợi cuối cùng của phương thức sản xuất tiến bộ hơn.
-
-\section{Bản chất và đặc trưng cơ bản của Cách mạng công nghiệp 4.0}
-
-\textbf{Khái niệm và Bản chất}
-
-Thuật ngữ Cách mạng công nghiệp 4.0 được Diễn đàn Kinh tế Thế giới định hình để mô tả sự thay đổi mang tính hệ thống trong cách thức con người sản xuất và sinh sống, được thúc đẩy bởi sự hội tụ của các công nghệ tiên tiến.
-
-Về bản chất, nếu các cuộc cách mạng trước đây dựa trên cơ giới hóa (lần 1), điện khí hóa (lần 2) hay tự động hóa cục bộ (lần 3), thì CMCN 4.0 là sự liên kết và xóa nhòa ranh giới giữa ba thế giới: thế giới vật lý, thế giới kỹ thuật số và thế giới sinh học. Cốt lõi của cuộc cách mạng này là xây dựng các hệ thống thực - ảo, nơi vạn vật được kết nối, quy trình được tự động hóa thông minh và vận hành dựa trên dữ liệu lớn.
-
-\textbf{Những đặc trưng nổi bật}
-
-Dưới góc độ lý luận hệ thống, CMCN 4.0 khác biệt hoàn toàn so với các nấc thang công nghiệp hóa trước đó thông qua ba đặc trưng cốt lõi:
-
-Trước hết, công nghệ 4.0 phát triển theo cấp số nhân, không đi theo quỹ đạo tuyến tính như các cuộc cách mạng trước đây; sự đột phá của một công nghệ (như chip bán dẫn) có thể ngay lập tức tạo hiệu ứng lan tỏa sang nhiều lĩnh vực khác. Tiếp theo, phạm vi tác động của cuộc cách mạng này rộng lớn và sâu sắc, không chỉ giới hạn ở nhà máy mà còn định hình lại nông nghiệp, y tế, giáo dục, quốc phòng và cấu trúc của toàn bộ nền kinh tế. Cuối cùng, đây là sự thay đổi mang tính hệ thống: CMCN 4.0 không chỉ tạo ra sản phẩm hay dịch vụ thông minh hơn, mà còn biến đổi toàn bộ hệ thống sản xuất, quản lý và quản trị, làm cho kết nối chuỗi cung ứng toàn cầu trở nên tức thời, minh bạch và tự động hóa cao.
-
-\section{Sự phát triển của các phạm trù Kinh tế chính trị trong bối cảnh CMCN 4.0}
-
-Dưới lăng kính lý luận Mác - Lênin, bản chất của CMCN 4.0 chính là một cuộc cách mạng sâu sắc làm thay đổi nội hàm của các yếu tố cấu thành \textbf{Lực lượng sản xuất}:
-
-Trước hết, về tư liệu lao động, nếu máy hơi nước hay động cơ điện trước đây thay thế sức lực cơ bắp của con người thì các thuật toán AI, hệ thống robot tự hành và công nghệ máy học trong CMCN 4.0 đang từng bước thay thế một phần lao động trí óc như tính toán, phân tích và ra quyết định. Vì vậy, hệ thống máy móc trong quan điểm của Mác đã tiến hóa thành các hệ thống máy móc có trí tuệ. Bên cạnh đó, về đối tượng lao động, ngoài các yếu tố tự nhiên và nguyên vật liệu truyền thống, dữ liệu đã trở thành một loại tài nguyên mới rất đắt giá; việc khai thác, phân tích và xử lý dữ liệu để tạo giá trị thặng dư là một hình thái sản xuất đặc trưng của kỷ nguyên số. Đồng thời, chủ thể lao động cũng biến đổi về chất: lao động cơ bắp, giản đơn dần bị thu hẹp, thay vào đó là đội ngũ lao động tri thức với kỹ năng số và năng lực điều khiển các hệ thống thực - ảo.
-
-Từ nền tảng lý luận này, có thể thấy mối liên hệ hữu cơ: quá trình CNH, HĐH ở thời điểm hiện tại không thể tách rời việc nắm bắt và làm chủ các yếu tố cấu thành lực lượng sản xuất mới của CMCN 4.0. Đây là cơ sở lý luận vững chắc để tiếp tục phân tích những tác động thực tiễn ở các phần tiếp theo.
-
-\newpage
-\chapter{TÁC ĐỘNG CỦA CMCN 4.0 ĐẾN QUÁ TRÌNH CÔNG NGHIỆP HÓA, HIỆN ĐẠI HÓA Ở VIỆT NAM}
-
-Cuộc Cách mạng công nghiệp lần thứ tư (CMCN 4.0) không chỉ là sự phát triển của công nghệ mà dưới góc độ Kinh tế chính trị, đây là bước nhảy vọt của lực lượng sản xuất xã hội \cite{vu2018phat}. Quá trình này tạo ra những biến đổi sâu sắc đến phương thức sản xuất, mở ra thời cơ lịch sử nhưng cũng đặt quá trình công nghiệp hóa, hiện đại hóa (CNH, HĐH) của Việt Nam trước những thách thức chưa từng có \cite{nguyen2020cach}.
-
-\section{Tác động tích cực}
-
-\subsection{Thúc đẩy hiện đại hóa lực lượng sản xuất}
-
-Theo quan điểm của Chủ nghĩa Mác - Lênin, lực lượng sản xuất là yếu tố động nhất, cách mạng nhất. CMCN 4.0 tác động mạnh mẽ đến cả hai yếu tố cấu thành lực lượng sản xuất tại Việt Nam:
-
-Trước hết, về tư liệu lao động, máy móc cơ khí truyền thống đang dần được thay thế bằng hệ thống tự động hóa, robot thông minh, dây chuyền kết nối vạn vật và trí tuệ nhân tạo. Tư liệu lao động vì thế không chỉ nối dài sức mạnh cơ bắp mà còn thay thế một phần chức năng trí óc của con người; điển hình là các nhà máy sản xuất ô tô của VinFast đã áp dụng hàng ngàn robot công nghiệp tự động, giúp năng suất lao động xã hội tăng lên nhiều lần so với phương thức lắp ráp thủ công. Đồng thời, về người lao động, việc thích ứng với công cụ lao động mới buộc chất lượng nguồn nhân lực Việt Nam phải nâng cao, chuyển dần từ lao động giản đơn, thiên về thể lực sang lao động phức tạp, thiên về trí tuệ, qua đó hình thành lực lượng sản xuất hiện đại đáp ứng yêu cầu của nền sản xuất hàng hóa quy mô lớn.
-
-\subsection{Mở ra cơ hội phát triển kinh tế số}
-
-CMCN 4.0 cung cấp nền tảng vật chất - kỹ thuật để Việt Nam chuyển đổi mô hình tăng trưởng. Thay vì khai thác tài nguyên thiên nhiên cạn kiệt hay dựa vào lao động giá rẻ, nền kinh tế đang chuyển dịch sang dựa vào dữ liệu, tri thức và sự đổi mới sáng tạo.
-
-Sự bùng nổ của dữ liệu lớn và điện toán đám mây đang tạo ra các mô hình kinh doanh hoàn toàn mới, làm thay đổi sâu sắc lĩnh vực lưu thông và phân phối hàng hóa. Thực tiễn tại Việt Nam cho thấy sự phát triển mạnh mẽ của thương mại điện tử như Shopee, TikTok Shop, công nghệ tài chính như MoMo, VNPay và kinh tế chia sẻ như Grab, Be đã góp phần giảm đáng kể chi phí lưu thông, thúc đẩy vòng chu chuyển tư bản nhanh hơn, từ đó đóng góp ngày càng lớn vào quy mô GDP quốc gia \cite{kinhtesonhandan,hoang2019chuyen}.
-
-\subsection{Tăng khả năng rút ngắn quá trình CNH, HĐH}
-
-Đối với một nước đi sau, CMCN 4.0 là cơ hội vàng để Việt Nam thực hiện chiến lược đi tắt đón đầu.
-
-Theo kinh tế chính trị, các nước đang phát triển không nhất thiết phải đi tuần tự qua từng nấc thang công nghiệp hóa như cơ khí hóa rồi mới đến điện khí hóa, số hóa, giống các nước tư bản phương Tây thế kỷ XIX. Trong điều kiện đó, Việt Nam có thể trực tiếp nhập khẩu, tiếp thu và ứng dụng ngay các công nghệ tiên tiến nhất của nhân loại; nhờ hạ tầng viễn thông phát triển nhanh, nước ta đã đi tắt thành công ở một số lĩnh vực như viễn thông và ngân hàng số, qua đó rút ngắn đáng kể thời gian và chi phí để bắt kịp các nước phát triển trong khu vực.
-
-\section{Tác động tiêu cực và thách thức}
-
-\subsection{Áp lực cạnh tranh và nguy cơ tụt hậu}
-
-Trong phân công lao động quốc tế hiện nay, giá trị thặng dư chủ yếu tập trung ở hai đầu đường cong nụ cười, tức khâu nghiên cứu phát triển và khâu phân phối, marketing. Khâu gia công, lắp ráp ở giữa mang lại giá trị rất thấp.
-
-Nếu Việt Nam không đẩy nhanh tốc độ đổi mới công nghệ, các lợi thế so sánh truyền thống như nhân công giá rẻ, dồi dào sẽ bị triệt tiêu bởi robot làm việc hiệu quả hơn và có chi phí thấp hơn. Khi đó, hàng hóa Việt Nam sẽ suy giảm sức cạnh tranh trên thị trường toàn cầu, nền kinh tế có nguy cơ bị gạt ra khỏi chuỗi giá trị quốc tế, tụt hậu xa hơn và mắc kẹt trong bẫy thu nhập trung bình.
-
-\subsection{Tác động đến cơ cấu lao động}
-
-Sự thay đổi của lực lượng sản xuất tất yếu dẫn đến sự xáo trộn trong quan hệ sản xuất và phân công lao động xã hội:
-
-Trước hết, thất nghiệp cơ cấu là rủi ro hiện hữu khi AI và tự động hóa đe dọa trực tiếp việc làm của lao động phổ thông; tại Việt Nam, các ngành thâm dụng lao động như dệt may, da giày, lắp ráp linh kiện điện tử (chiếm tỷ trọng lớn trong xuất khẩu) đang đối mặt với khả năng hàng triệu công nhân mất việc khi doanh nghiệp FDI tự động hóa dây chuyền. Bên cạnh đó, nếu hệ thống giáo dục và công tác đào tạo nghề không kịp thời chuyển đổi, nền kinh tế sẽ rơi vào tình trạng dư thừa lao động chân tay nhưng khan hiếm nghiêm trọng kỹ sư công nghệ cao, từ đó làm gia tăng bất bình đẳng thu nhập và tạo thêm sức ép lên an sinh xã hội.
-
-\subsection{Gia tăng phụ thuộc công nghệ}
-
-Một nghịch lý của các nước đang phát triển trong CMCN 4.0 là nguy cơ gia tăng sự phụ thuộc.
-
-Hiện nay, các công nghệ lõi như sản xuất chip bán dẫn hay các mô hình AI tạo sinh nền tảng chủ yếu bị độc quyền bởi các tập đoàn xuyên quốc gia ở Mỹ, Tây Âu và Trung Quốc. Vì vậy, nếu Việt Nam chỉ dừng ở mức nhập khẩu công nghệ để gia công phần mềm hoặc ứng dụng bề nổi, quá trình CNH, HĐH sẽ mang tính bị động, khiến nền kinh tế dễ tổn thương và chịu chi phối từ bên ngoài, đồng thời làm gia tăng rủi ro về an ninh kinh tế, chủ quyền không gian mạng và an toàn dữ liệu quốc gia.
-
-\section{Những yêu cầu phát triển mới đặt ra cho Việt Nam}
-
-Từ những phân tích trên, Đại hội XIII của Đảng đã xác định, để CNH, HĐH thành công trong bối cảnh CMCN 4.0, Việt Nam cần thực hiện đồng bộ các yêu cầu chiến lược sau \cite{dangcsvn2021vankin}:
-
-Trước hết, về thể chế kinh tế, cần xây dựng thể chế kinh tế thị trường định hướng xã hội chủ nghĩa theo hướng kiến tạo và linh hoạt, đồng thời tạo lập các cơ chế thử nghiệm cho mô hình kinh doanh mới và hoàn thiện pháp luật về quyền sở hữu trí tuệ, an ninh mạng, giao dịch dữ liệu điện tử để khơi thông nguồn lực đổi mới sáng tạo. Bên cạnh đó, về phát triển nguồn nhân lực, cần chuyển mô hình giáo dục từ truyền thụ kiến thức sang phát triển năng lực sáng tạo và kỹ năng thích ứng theo định hướng STEM, đồng thời xây dựng chiến lược quốc gia đào tạo chuyên gia, kỹ sư công nghệ chất lượng cao và hỗ trợ chuyển đổi nghề cho công nhân chịu tác động của tự động hóa. Cùng với đó, về xây dựng kết cấu hạ tầng, CNH, HĐH số đòi hỏi nền tảng hạ tầng đồng bộ và vững chắc, trong đó cần ưu tiên đầu tư hạ tầng viễn thông, trung tâm dữ liệu quốc gia và hạ tầng năng lượng xanh, ổn định phục vụ sản xuất. Cuối cùng, về tính độc lập, tự chủ gắn với hội nhập, cần xây dựng nền kinh tế độc lập, tự chủ theo tinh thần mở cửa chủ động, thu hút FDI chất lượng cao có cam kết chuyển giao công nghệ, đồng thời có chính sách nuôi dưỡng các tập đoàn công nghệ nội địa như Viettel, FPT đủ sức làm chủ công nghệ lõi và vươn lên các nấc cao hơn trong chuỗi giá trị toàn cầu.
-
-\newpage
-\chapter{THỰC TRẠNG VÀ NHỮNG VẤN ĐỀ ĐẶT RA TRONG TIẾN TRÌNH CÔNG NGHIỆP HÓA, HIỆN ĐẠI HÓA Ở VIỆT NAM}
-
-\section{Thực trạng công nghiệp hóa, hiện đại hóa hiện nay}
-
-Trong bối cảnh CMCN 4.0, thực trạng công nghiệp hóa, hiện đại hóa (CNH - HĐH) ở Việt Nam có thể khái quát theo ba nét chính: công nghiệp chế biến, chế tạo tiếp tục là động lực tăng trưởng quan trọng; cơ cấu tăng trưởng có xu hướng đa động lực, trong đó sản xuất công nghiệp giữ vai trò nền tảng vật chất, còn khu vực dịch vụ và các hoạt động dựa trên nền tảng số ngày càng mở rộng.
-
-\subsection{Thành tựu và động lực tăng trưởng: công nghiệp chế biến, chế tạo là động lực quan trọng của tăng trưởng}
-
-Trong điều kiện CMCN 4.0, thực tiễn năm 2025 cho thấy công nghiệp chế biến, chế tạo tiếp tục giữ vai trò động lực chủ yếu của tăng trưởng kinh tế. Theo Báo cáo tình hình kinh tế – xã hội 9 tháng năm 2025, GDP tăng 7,85\%, trong đó khu vực công nghiệp và xây dựng tăng 8,69\%; riêng công nghiệp chế biến, chế tạo tăng 9,92\% và đóng góp trên 31\% vào mức tăng chung của toàn nền kinh tế \cite{baocao2025q3}. Chỉ số sản xuất công nghiệp của ngành này tăng 10,4\%, khẳng định vị trí trung tâm trong mở rộng quy mô và nâng cao năng suất sản xuất \cite{congngchebien2024}.
-
-Dưới góc độ kinh tế chính trị, sự tăng trưởng của công nghiệp chế biến, chế tạo phản ánh sự phát triển của lực lượng sản xuất trong nền kinh tế. Khi khu vực này mở rộng, nó không chỉ tạo ra giá trị gia tăng trực tiếp mà còn kéo theo sự phát triển của các ngành liên quan như logistics, tài chính, năng lượng và mạng lưới doanh nghiệp vệ tinh, qua đó thúc đẩy tái cơ cấu nền kinh tế theo hướng công nghiệp hóa, hiện đại hóa. Việc nhóm hàng công nghiệp chế biến chiếm 88,6\% kim ngạch xuất khẩu càng cho thấy sản xuất công nghiệp đang trở thành một trong những nền tảng vật chất quan trọng của tăng trưởng và hội nhập.
-
-Như vậy, công nghiệp chế biến, chế tạo không chỉ là bộ phận có tốc độ tăng cao mà còn giữ vai trò hạt nhân trong quá trình phát triển lực lượng sản xuất và củng cố nền tảng vật chất của nền kinh tế trong thời kỳ phát triển mới.
-
-\subsection{Chuyển dịch cơ cấu: vừa củng cố vai trò sản xuất công nghiệp, vừa hình thành động lực số}
-
-Xét ở góc độ cơ cấu, CNH - HĐH hiện nay không chỉ thể hiện ở quy mô sản xuất công nghiệp mà còn ở sự thay đổi trong cấu trúc động lực tăng trưởng. Một mặt, sản xuất công nghiệp—đặc biệt là chế biến, chế tạo—được củng cố thông qua đà phục hồi và mở rộng ở nhiều nhóm ngành (vật liệu, hóa chất, dệt may, sản phẩm kim loại, điện tử…). Mặt khác, nền kinh tế xuất hiện xu hướng tăng vai trò của các hoạt động dựa trên dữ liệu và nền tảng số: thương mại điện tử, tài chính số, dịch vụ số trong quản trị và cung ứng công.
-
-Cơ chế chuyển dịch ở đây là: khi công nghệ số thâm nhập vào sản xuất và lưu thông, chi phí giao dịch giảm, tốc độ luân chuyển hàng hóa - dịch vụ tăng, và năng lực kết nối thị trường được mở rộng. Điều này làm cho quá trình chuyển dịch cơ cấu không chỉ là tăng tỷ trọng ngành theo cách truyền thống, mà còn là chuyển dịch phương thức: từ dựa nhiều vào lao động thủ công và quản trị thủ công sang dựa nhiều hơn vào tự động hóa, dữ liệu và quản trị số.
-
-\subsection{Bước đầu ứng dụng công nghệ số: thay đổi phương thức sản xuất, quản trị và thị trường}
-
-Một đặc điểm nổi bật của CNH–HĐH hiện nay là chuyển đổi số đang làm thay đổi trực tiếp cách thức vận hành của cả khu vực công và khu vực doanh nghiệp. Ở khu vực công, việc triển khai Cổng Dịch vụ công quốc gia, định danh điện tử VNeID, hóa đơn điện tử và hải quan điện tử đã rút ngắn thời gian xử lý thủ tục, giảm chi phí tuân thủ và tăng tính minh bạch. Điều này góp phần giảm ma sát thể chế, cải thiện môi trường đầu tư và tạo điều kiện thuận lợi cho hoạt động sản xuất – kinh doanh.
-
-Ở khu vực doanh nghiệp, nhiều cơ sở sản xuất đã áp dụng hệ thống ERP/CRM, quản trị kho bằng mã QR, sử dụng dashboard dữ liệu để theo dõi sản lượng và tối ưu kế hoạch sản xuất. Trong thương mại, việc bán hàng qua sàn thương mại điện tử, livestream và thanh toán QR giúp mở rộng thị trường vượt ra ngoài không gian địa lý truyền thống. Những ví dụ này cho thấy công nghệ số không chỉ nâng cao năng suất mà còn làm thay đổi phương thức tổ chức sản xuất và phân phối.
-
-Trong nông nghiệp, các mô hình nhà màng, tưới nhỏ giọt tự động và truy xuất nguồn gốc bằng tem QR đang được áp dụng ở nhiều địa phương, giúp tiết kiệm đầu vào và nâng cao giá trị nông sản. Xét về cơ chế, số hóa làm giảm chi phí giao dịch, tăng tốc độ lưu chuyển hàng hóa và nâng cao hiệu quả phối hợp trong toàn bộ quá trình tái sản xuất, qua đó thúc đẩy CNH–HĐH theo hướng hiện đại và dựa trên tri thức.
-
-\section{Những hạn chế trong trình độ lực lượng sản xuất và điều kiện kinh tế - xã hội}
-
-Mặc dù công nghiệp chế biến, chế tạo và các hoạt động kinh tế số đang đóng vai trò ngày càng quan trọng trong tăng trưởng, song xét ở chiều sâu, trình độ lực lượng sản xuất và điều kiện kinh tế - xã hội của Việt Nam vẫn bộc lộ nhiều hạn chế mang tính cấu trúc. Những hạn chế này tập trung ở năng suất lao động, trình độ công nghệ, chất lượng nguồn nhân lực và hệ thống thể chế - các yếu tố có tính quyết định đến chất lượng và tính bền vững của quá trình công nghiệp hóa, hiện đại hóa.
-
-\subsection{Năng suất lao động còn ở mức khiêm tốn so với khu vực}
-
-Năng suất lao động (NSLĐ) của Việt Nam giai đoạn 2021 - 2025 liên tục tăng với tốc độ bình quân khoảng 4,7 - 4,8\%/năm; riêng năm 2024 đạt xấp xỉ 25.850 USD/người (tính theo sức mua tương đương) \cite{baocao2024q4}. Tuy nhiên, so với các nước Đông Nam Á, Việt Nam vẫn chỉ đứng ở nhóm sau, thấp hơn đáng kể so với Singapore, Malaysia, Thái Lan và một số nền kinh tế trong khu vực \cite{le2020nang}.
-
-Điều này cho thấy, mặc dù tăng trưởng GDP có sự cải thiện, nhưng nền tảng hiệu quả sử dụng lao động - thước đo quan trọng của trình độ lực lượng sản xuất - vẫn chưa đạt mức tương xứng với yêu cầu hiện đại hóa. Cơ chế tác động ở đây khá rõ: năng suất thấp làm giảm khả năng tích lũy nội bộ của doanh nghiệp và nền kinh tế, từ đó hạn chế nguồn lực dành cho đầu tư đổi mới công nghệ và nâng cấp chuỗi giá trị.
-
-\subsection{Trình độ công nghệ còn phụ thuộc và chưa đồng đều}
-
-Trong những năm gần đây, tỷ lệ doanh nghiệp áp dụng chiến lược số và các công nghệ mới như AI, dữ liệu lớn có xu hướng gia tăng; nhiều doanh nghiệp cho biết đã cải thiện hiệu quả hoạt động nhờ chuyển đổi số \cite{apdungcongnghe2024}. Tuy nhiên, mức độ ứng dụng công nghệ chủ yếu tập trung ở khâu quản trị, marketing, dịch vụ khách hàng hoặc tự động hóa cục bộ, trong khi năng lực làm chủ công nghệ lõi, nghiên cứu - phát triển (R\&D) và sản xuất công nghệ cao còn hạn chế.
-
-Thực tế chi tiêu cho R\&D so với GDP vẫn ở mức thấp so với nhiều quốc gia trong khu vực. Điều này phản ánh nền sản xuất còn dựa nhiều vào gia công, lắp ráp và phụ thuộc vào công nghệ nhập khẩu. Hệ quả là giá trị gia tăng nội địa trong nhiều ngành công nghiệp chưa cao, doanh nghiệp trong nước khó vươn lên các nấc cao hơn trong chuỗi giá trị toàn cầu.
-
-Cơ chế của hạn chế này nằm ở chỗ: khi công nghệ không được làm chủ và nội sinh hóa, quá trình công nghiệp hóa dễ rơi vào trạng thái mở rộng quy mô hơn là nâng cấp chất lượng, làm cho tăng trưởng thiếu tính đột phá về năng suất và sáng tạo.
-
-\subsection{Chất lượng nguồn nhân lực chưa đáp ứng yêu cầu mới}
-
-Việt Nam có lợi thế về quy mô lực lượng lao động với hơn 52 triệu người tham gia thị trường lao động và tỷ lệ tham gia lao động tương đối cao. Tỷ lệ lao động qua đào tạo có bằng, chứng chỉ đạt khoảng 27\% và có xu hướng tăng lên trong những năm gần đây. Tuy nhiên, con số này cũng đồng thời phản ánh rằng phần lớn lao động chưa được đào tạo bài bản hoặc chưa có chứng chỉ nghề chính quy.
-
-Thị trường lao động vẫn tồn tại tình trạng thừa thầy, thiếu thợ, thiếu hụt lao động kỹ thuật cao, chuyên gia công nghệ và nhân lực số \cite{phattriennhanluc}. Trong bối cảnh CMCN 4.0, yêu cầu về kỹ năng số, tư duy sáng tạo, khả năng thích ứng và kỷ luật lao động ngày càng cao, nhưng hệ thống đào tạo và đào tạo lại chưa theo kịp tốc độ chuyển đổi của nền kinh tế \cite{tran2020nguon}.
-
-Hệ quả trực tiếp là năng suất lao động bị kìm hãm và doanh nghiệp gặp khó khăn trong quá trình đổi mới công nghệ. Nếu không nâng cao chất lượng nguồn nhân lực một cách đồng bộ, quá trình hiện đại hóa sẽ thiếu nền tảng con người tương xứng với yêu cầu phát triển.
-
-\subsection{Thể chế và môi trường vận hành còn nhiều điểm nghận}
-
-Hoàn thiện thể chế được xác định là một trong ba đột phá chiến lược, song trên thực tế vẫn tồn tại nhiều điểm nghẽn ảnh hưởng đến hiệu quả CNH - HĐH \cite{diemnghenhethche}. Hệ thống pháp luật ở một số lĩnh vực còn chồng chéo, thiếu thống nhất; tình trạng luật chờ nghị định, nghị định chờ thông tư làm giảm tính dự đoán và ổn định của môi trường đầu tư.
-
-Đặc biệt, hành lang pháp lý cho các lĩnh vực mới như dữ liệu, trí tuệ nhân tạo, kinh tế chia sẻ còn thiếu đồng bộ, làm hạn chế khả năng khai thác chuyển đổi số như một động lực tăng trưởng mới. Cơ chế tác động ở đây là: khi thể chế không thông suốt, chi phí tuân thủ tăng, thời gian thực hiện kéo dài, làm giảm động lực đầu tư và đổi mới của doanh nghiệp.
-
-\section{Những mâu thuẫn và vấn đề nổi bật trong bối cảnh CMCN 4.0}
-
-Từ thực trạng và các hạn chế mang tính cấu trúc có thể thấy: CNH - HĐH ở Việt Nam đang vận động trong động lực kép (công nghiệp chế biến, chế tạo và chuyển đổi số), nhưng đồng thời bộc lộ những mâu thuẫn phát triển. Các mâu thuẫn này không chỉ là khó khăn riêng lẻ, mà là xung đột giữa yêu cầu phát triển mới của CMCN 4.0 với điều kiện hiện có của lực lượng sản xuất và thể chế, nếu không được xử lý sẽ làm giảm chất lượng tăng trưởng và gia tăng nguy cơ tụt hậu.
-
-\subsection{Mâu thuận giữa yêu cầu hiện đại hóa nhanh với trình độ công nghệ còn hạn chế}
-
-Yêu cầu mới của 4.0 là hiện đại hóa dựa trên công nghệ, tự động hóa và dữ liệu, nhằm tạo bước nhảy về năng suất, chất lượng và khả năng kiểm soát chuỗi sản xuất. Trong khi đó, mức độ ứng dụng công nghệ mới tăng nhưng chủ yếu ở các khâu quản trị, dịch vụ hoặc tự động hóa cục bộ, còn năng lực làm chủ công nghệ lõi, R\&D và sản xuất công nghệ cao vẫn hạn chế.
-
-Mâu thuẫn thể hiện ở chỗ quá trình CNH - HĐH đòi hỏi nâng cấp chất lượng (đi vào chiều sâu công nghệ), nhưng nền sản xuất dễ nghiêng về mở rộng quy mô (tăng sản lượng, tăng tốc độ) khi công nghệ chưa được nội sinh hóa. Cơ chế tác động là: công nghệ không làm chủ khiến giá trị gia tăng nội địa thấp, năng lực nâng cấp sản phẩm chậm, dễ phụ thuộc vào thiết bị, giải pháp và tiêu chuẩn từ bên ngoài; từ đó hạn chế khả năng dịch chuyển lên các nấc cao hơn trong chuỗi giá trị. Hệ quả là tăng trưởng công nghiệp có thể vẫn cao trong ngắn hạn, nhưng khó chuyển thành năng lực cạnh tranh bền vững trong dài hạn.
-
-\subsection{Mâu thuận giữa yêu cầu chuyển đổi số toàn diện với chất lượng nguồn nhân lực chưa tương xứng}
-
-Trong bối cảnh số hóa lan rộng, yêu cầu mới không chỉ là trang bị công nghệ, mà là xây dựng được lực lượng lao động có kỹ năng số, tư duy thích ứng và kỷ luật lao động công nghiệp để vận hành công nghệ hiệu quả. Tuy nhiên, điều kiện hiện có cho thấy tỷ lệ lao động qua đào tạo có bằng/chứng chỉ chưa cao (chiếm 27\%, tính đến hết 2023); cơ cấu kỹ năng còn lệch, tình trạng thừa thầy, thiếu thợ vẫn tồn tại; thiếu hụt nhân lực công nghệ và nhân lực số là rào cản thường trực đối với doanh nghiệp.
-
-Mâu thuẫn thể hiện ở chỗ chuyển đổi số muốn diễn ra nhanh phải dựa trên nguồn nhân lực chất lượng cao, nhưng chất lượng và cơ cấu nhân lực hiện tại chưa đáp ứng tốc độ chuyển đổi của nền kinh tế. Cơ chế tác động là: thiếu kỹ năng làm giảm hiệu quả hấp thụ công nghệ, làm cho đầu tư công nghệ không đạt năng suất kỳ vọng, hoặc chỉ dừng ở mức ứng dụng phân tán; đồng thời tạo sức ép lên thị trường lao động khi tự động hóa có thể thay thế một bộ phận lao động giản đơn. Nếu không tháo gỡ, chuyển đổi số sẽ bị nghẽn ở khâu con người, dẫn đến hiện đại hóa thiếu nền tảng và khó tạo bước nhảy năng suất.
-
-\subsection{Mâu thuận giữa hội nhập sâu rộng với năng lực cạnh tranh nội địa còn hạn chế}
-
-Yêu cầu mới trong bối cảnh hội nhập và 4.0 là doanh nghiệp phải cạnh tranh bằng chất lượng, tiêu chuẩn, tốc độ đáp ứng và năng lực đổi mới, đồng thời tham gia sâu hơn vào chuỗi giá trị toàn cầu. Trong khi đó, điều kiện hiện có là năng lực công nghệ và năng suất còn khiêm tốn, khả năng tích lũy và đầu tư cho đổi mới chưa mạnh; tỷ trọng doanh nghiệp có thể thực hiện đổi mới theo chiều sâu còn hạn chế.
-
-Mâu thuẫn thể hiện ở chỗ hội nhập mở ra thị trường và công nghệ, nhưng cũng đặt ra áp lực cạnh tranh vượt trội. Khi năng lực nội địa chưa đủ mạnh, doanh nghiệp trong nước dễ bị đẩy vào các phân đoạn giá trị thấp hoặc phụ thuộc vào đơn hàng, nền tảng và chuỗi cung ứng của khu vực mạnh hơn. Cơ chế tác động là: năng lực cạnh tranh yếu khiến lợi ích từ hội nhập phân bổ không đều; doanh nghiệp nội địa khó leo thang công nghệ, trong khi khu vực có lợi thế vốn và công nghệ chiếm lĩnh các khâu giá trị cao. Hệ quả là nguy cơ lớn về lượng nhưng yếu về chất: xuất khẩu và sản lượng có thể tăng, nhưng giá trị gia tăng nội địa và năng lực tự chủ phát triển chậm cải thiện.
-
-\subsection{Mâu thuận giữa yêu cầu đổi mới nhanh của kinh tế số với những điểm nghận thể chế}
-
-Trong thời đại 4.0, yêu cầu mới đối với quản trị quốc gia là thể chế phải linh hoạt, minh bạch, có khả năng thích ứng nhanh với mô hình kinh doanh mới (dữ liệu, AI, kinh tế nền tảng, cơ chế thử nghiệm…). Tuy nhiên, trong điều kiện hiện nay, mặc dù đã có nhiều nỗ lực hoàn thiện thể chế và cải cách bộ máy theo hướng tinh gọn, minh bạch, hệ thống pháp luật ở một số lĩnh vực vẫn còn biểu hiện chồng chéo, thiếu đồng bộ; tình trạng luật chờ nghị định, nghị định chờ thông tư tuy từng bước được khắc phục nhưng vẫn ảnh hưởng đến tính dự đoán của môi trường đầu tư. Việc phân cấp – phân quyền đã được đẩy mạnh, song trong một số trường hợp vẫn chưa gắn đầy đủ với cơ chế trách nhiệm giải trình rõ ràng; hạ tầng và liên thông dữ liệu giữa các cơ quan còn cần tiếp tục hoàn thiện để đáp ứng yêu cầu quản trị số.
-
-Mâu thuẫn thể hiện ở chỗ nền kinh tế số cần tốc độ và tính linh hoạt, nhưng thể chế và cơ chế thực thi đôi khi tạo ma sát làm chậm đổi mới. Cơ chế tác động là: chi phí tuân thủ và độ trễ thủ tục làm giảm động lực đầu tư, khiến doanh nghiệp khó thử nghiệm mô hình mới, khó mở rộng quy mô đổi mới; đồng thời làm suy giảm hiệu quả phân bổ nguồn lực. Nếu không tháo gỡ, thể chế có thể trở thành điểm nghẽn lớn nhất, khiến lợi thế của công nghệ không chuyển hóa thành năng lực cạnh tranh thực tế.
-
-\newpage
-\chapter{PHƯƠNG HƯỚNG VÀ GIẢI PHÁP GIẢI QUYẾT CÁC VẤN ĐỀ TRONG TIẾN TRÌNH CÔNG NGHIỆP HÓA - HIỆN ĐẠI HÓA}
-
-\section{Phương hướng và Quan điểm chỉ đạo của Đảng và Nhà nước}
-
-Trong bối cảnh cuộc Cách mạng công nghiệp lần thứ tư (CMCN 4.0) đang diễn ra mạnh mẽ, Đảng và Nhà nước Việt Nam đã xác định những quan điểm chỉ đạo mang tính chiến lược, vừa kế thừa những giá trị lý luận của chủ nghĩa Mác – Lênin, vừa cập nhật những xu thế tất yếu của thời đại. Các quan điểm này tập trung vào các nội dung cốt lõi sau:
-
-\subsection{Kiên định mục tiêu CNH-HĐH gắn với CMCN 4.0}
-
-Đảng ta khẳng định: Công nghiệp hóa, hiện đại hóa là nhiệm vụ trọng tâm, xuyên suốt của cả hệ thống chính trị, là phương thức để Việt Nam xây dựng cơ sở vật chất - kỹ thuật của chủ nghĩa xã hội \cite{nghiquyet29}. Tuy nhiên, điểm mới căn bản trong giai đoạn này là sự gắn kết hữu cơ giữa CNH-HĐH với CMCN 4.0 và chuyển đổi số quốc gia \cite{cnhhdh2025}.
-
-Theo định hướng mới, CNH-HĐH phải dựa trên nền tảng số thay vì triển khai tuần tự như trước, trong đó chuyển đổi số được coi là phương thức đột phá để rút ngắn quá trình hiện đại hóa; việc ứng dụng công nghệ số, dữ liệu lớn và trí tuệ nhân tạo vào mọi lĩnh vực của nền kinh tế, từ sản xuất công nghiệp đến nông nghiệp và dịch vụ, là điều kiện tiên quyết để nâng cao năng lực cạnh tranh quốc gia. Đồng thời, quan điểm chỉ đạo cũng nhấn mạnh CNH-HĐH phải gắn với tăng trưởng xanh, đi đôi với bảo vệ môi trường và ứng phó biến đổi khí hậu; chuyển dịch năng lượng từ hóa thạch sang tái tạo và thúc đẩy kinh tế tuần hoàn trở thành những mắt xích không thể tách rời của tiến trình hiện đại hóa hiện nay.
-
-\subsection{Lấy khoa học, công nghệ và đổi mới sáng tạo làm động lực cốt lõi}
-
-Dưới góc độ Kinh tế chính trị, để thay đổi trình độ lực lượng sản xuất, yếu tố quyết định phải là khoa học và công nghệ. Đảng xác định khoa học, công nghệ và đổi mới sáng tạo là quốc sách hàng đầu, là động lực chính để tạo ra bước nhảy vọt về năng suất lao động.
-
-Theo đó, mô hình tăng trưởng cần được chuyển mạnh từ dựa vào khai thác tài nguyên, vốn và lao động giá rẻ (đã chạm ngưỡng giới hạn) sang dựa vào năng suất, chất lượng và hiệu quả trên nền tảng ứng dụng tri thức. Đồng thời, cần xây dựng hệ sinh thái đổi mới sáng tạo với vai trò kiến tạo của Nhà nước, thúc đẩy kết nối giữa Nhà nước, nhà khoa học và doanh nghiệp; việc xác định doanh nghiệp là trung tâm của hoạt động nghiên cứu và ứng dụng công nghệ sẽ giúp các thành tựu khoa học nhanh chóng trở thành lực lượng sản xuất trực tiếp và tạo ra giá trị thặng dư cao hơn cho nền kinh tế.
-
-\subsection{Phát huy nội lực kết hợp với ngoại lực và xây dựng nền kinh tế độc lập, tự chủ}
-
-Quan điểm xuyên suốt của Đảng trong bối cảnh hội nhập quốc tế là phải xử lý hài hòa mối quan hệ giữa độc lập, tự chủ và hội nhập.
-
-Trên tinh thần đó, phát huy nội lực phải được xem là nền tảng thông qua ưu tiên phát triển các ngành công nghiệp nền tảng (luyện kim, cơ khí chế tạo, hóa chất) và các ngành mũi nhọn có lợi thế so sánh như công nghệ số, điện tử - viễn thông, năng lượng mới; làm chủ công nghệ và xây dựng thương hiệu quốc gia mạnh là điều kiện để Việt Nam không bị mắc kẹt ở vai trò gia công cho các tập đoàn nước ngoài. Đồng thời, cần tận dụng ngoại lực như một động lực quan trọng bằng cách chủ động hội nhập quốc tế sâu rộng, thu hút FDI có chọn lọc, ưu tiên dự án công nghệ cao, quản trị hiện đại và có khả năng lan tỏa, kết nối với chuỗi cung ứng của doanh nghiệp trong nước \cite{fdithehe,dieukiencnhhdh}; ngoại lực cần được sử dụng để thúc đẩy nội lực phát triển nhanh hơn nhưng không đánh đổi an ninh kinh tế hay tính tự chủ quốc gia.
-
-Tóm lại, những quan điểm chỉ đạo này thể hiện sự vận dụng sáng tạo chủ nghĩa Mác – Lênin vào điều kiện thực tiễn Việt Nam, khẳng định quyết tâm của Đảng trong việc đưa đất nước thoát khỏi bẫy thu nhập trung bình và trở thành nước phát triển, có thu nhập cao vào năm 2045 thông qua con đường CNH-HĐH hiện đại.
-
-\section{Các giải pháp trọng tâm tháo gỡ mâu thuận trong bối cảnh CMCN 4.0}
-
-Để quá trình công nghiệp hóa, hiện đại hóa (CNH-HĐH) thực sự đi vào chiều sâu, giải quyết dứt điểm các mâu thuẫn mang tính cấu trúc giữa yêu cầu phát triển mới và điều kiện thực tiễn, Việt Nam cần triển khai đồng bộ 4 nhóm giải pháp cốt lõi sau:
-
-\subsection{Giải pháp đột phá về công nghệ, nâng cao trình độ lực lượng sản xuất}
-
-Nhóm giải pháp này nhằm trực tiếp giải quyết mâu thuẫn giữa yêu cầu hiện đại hóa nhanh với trình độ công nghệ nội địa còn hạn chế và phụ thuộc. Khoa học và công nghệ không còn là yếu tố hỗ trợ mà phải trở thành lực lượng sản xuất trực tiếp.
-
-Trước hết, cần thúc đẩy đổi mới sáng tạo và làm chủ công nghệ lõi bằng cách khuyến khích các tập đoàn lớn và khối doanh nghiệp tư nhân đầu tư mạnh vào các trung tâm nghiên cứu và phát triển, từng bước làm chủ các công nghệ nền tảng của CMCN 4.0 như trí tuệ nhân tạo, dữ liệu lớn và điện toán đám mây; đồng thời vận hành hiệu quả Trung tâm Đổi mới sáng tạo Quốc gia để kết nối startup với quỹ đầu tư và tạo ra các giải pháp công nghệ trong nước. Tiếp đó, cần phát triển kinh tế số gắn với số hóa sản xuất thông qua áp dụng mô hình nhà máy thông minh để tối ưu quy trình và nâng cao chất lượng sản phẩm, đồng thời mở rộng ứng dụng cảm biến kết nối và máy bay không người lái trong nông nghiệp chính xác. Song song với các nội dung trên, cần xây dựng hạ tầng số đồng bộ của nền kinh tế hiện đại, trong đó ưu tiên triển khai mạng 5G, tiến tới nghiên cứu 6G trên phạm vi toàn quốc và phát triển các trung tâm dữ liệu quy mô lớn cùng hệ thống điện toán đám mây quốc gia để lưu trữ, xử lý dữ liệu.
-
-\subsection{Giải pháp nâng tầm nguồn nhân lực đáp ứng yêu cầu chuyển đổi số}
-
-Con người là chủ thể của lực lượng sản xuất. Để giải quyết mâu thuẫn giữa yêu cầu chuyển đổi số toàn diện với tình trạng thiếu hụt lao động kỹ thuật cao, cần cấu trúc lại hệ thống phát triển nhân lực:
-
-Trước hết, cần cải cách hệ thống giáo dục theo hướng gắn với nhu cầu thị trường lao động, đẩy mạnh giáo dục STEM, tích hợp Khoa học, Công nghệ, Kỹ thuật và Toán học vào chương trình phổ thông; đồng thời, các trường đại học và cơ sở dạy nghề cần hợp tác chặt chẽ với doanh nghiệp để chú trọng đào tạo các ngành mới như kỹ sư AI, chuyên gia an ninh mạng và phân tích dữ liệu. Bên cạnh đó, cần triển khai chính sách hỗ trợ kinh phí đào tạo lại (reskilling) cho lao động trong các ngành thâm dụng lao động như dệt may, da giày đang có nguy cơ bị tự động hóa thay thế, đồng thời khuyến khích học tập suốt đời thông qua phổ cập các nền tảng học trực tuyến (MOOCs). Cuối cùng, cần xây dựng môi trường làm việc chuyên nghiệp với mức thu nhập cạnh tranh để thu hút và trọng dụng nhân tài, bao gồm chuyên gia quốc tế và người Việt Nam ở nước ngoài trở về đóng góp.
-
-\subsection{Giải pháp nâng cao năng lực cạnh tranh và chủ động hội nhập}
-
-Hội nhập sâu rộng mang lại cơ hội nhưng cũng tạo ra áp lực vượt trội đối với năng lực cạnh tranh nội địa còn khiêm tốn. Để nâng cấp vị trí trong chuỗi giá trị toàn cầu, cần thực hiện:
-
-Một mặt, Nhà nước cần có chiến lược nuôi dưỡng các doanh nghiệp công nghệ lớn trong nước như Viettel, FPT, VinFast, VNPT vươn tầm quốc tế để tiên phong đầu tư công nghệ lõi và dẫn dắt hệ sinh thái doanh nghiệp vệ tinh vừa và nhỏ. Mặt khác, chính sách thu hút FDI cần chuyển từ trọng số lượng sang trọng chất lượng, ưu tiên các tập đoàn đa quốc gia có công nghệ nguồn (bán dẫn, linh kiện điện tử, năng lượng tái tạo) và cam kết chuyển giao công nghệ, đồng thời thiết kế cơ chế khuyến khích doanh nghiệp FDI sử dụng sản phẩm phụ trợ của doanh nghiệp nội địa. Cùng với đó, cần khai thác triệt để các FTA thế hệ mới như CPTPP, EVFTA và RCEP; việc tuân thủ các tiêu chuẩn cao về quản trị và môi trường trong các hiệp định này cũng chính là thước đo để doanh nghiệp trong nước tự nâng cấp năng lực cạnh tranh.
-
-\subsection{Giải pháp tháo gỡ điểm nghận thể chế, tạo bệ phóng đổi mới sáng tạo}
-
-Sự phát triển của lực lượng sản xuất mới đòi hỏi quan hệ sản xuất (thể chế, pháp lý) phải thay đổi tương xứng. Để giải quyết điểm nghẽn kìm hãm tốc độ đổi mới của nền kinh tế số:
-
-Trước hết, cần luật hóa cơ chế thử nghiệm, chuyển tư duy từ không quản được thì cấm sang quản lý dựa trên thực tiễn, qua đó tạo không gian thử nghiệm có kiểm soát cho các lĩnh vực trọng điểm như công nghệ tài chính, tài sản số và kinh tế chia sẻ. Đồng thời, cần khẩn trương hoàn thiện pháp luật về kinh tế số, coi dữ liệu là một loại tài sản quốc gia và đối tượng lao động mới, từ đó bổ sung quy định về quyền sở hữu dữ liệu, giao dịch điện tử và hợp đồng thông minh. Cùng với đó, cần phát huy hiệu quả bộ máy đã được tinh gọn và đẩy mạnh Chính phủ số bằng cách tối ưu phương thức vận hành của bộ máy tinh gọn, mạnh trên môi trường mạng; liên thông dữ liệu toàn diện giữa các cơ quan chức năng sẽ giúp triệt tiêu rào cản hành chính, giảm chi phí tuân thủ cho doanh nghiệp và nâng cao tốc độ phản ứng chính sách trước biến động của thị trường kinh tế số. Cuối cùng, cần bảo đảm an ninh kinh tế và quyền sở hữu trí tuệ thông qua hoàn thiện chế tài xử phạt vi phạm bản quyền trên không gian mạng để bảo vệ thành quả nghiên cứu và phát triển, đồng thời xây dựng hàng rào kỹ thuật và pháp lý đủ mạnh nhằm bảo vệ chủ quyền không gian mạng quốc gia.
-
-\newpage
-\section*{KẾT LUẬN}
-\addcontentsline{toc}{section}{KẾT LUẬN}
-
-Cuộc Cách mạng công nghiệp lần thứ tư không còn là dự báo mà đã trở thành thực tiễn sinh động, làm thay đổi căn bản phương thức sản xuất và quản trị xã hội toàn cầu. Đối với Việt Nam, CMCN 4.0 vừa mang đến cơ hội đi tắt đón đầu để rút ngắn quá trình công nghiệp hóa, hiện đại hóa, vừa đặt ra những thách thức gay gắt về nguy cơ tụt hậu nếu không kịp thời đổi mới.
-
-Qua nghiên cứu, tiểu luận đã làm rõ một số vấn đề cốt lõi: Thứ nhất, về mặt lý luận, CNH-HĐH trong thời đại mới phải dựa trên nền tảng của khoa học, công nghệ và đổi mới sáng tạo \cite{tran2021kinh}. Đây là sự vận dụng sáng tạo quy luật về sự phù hợp giữa quan hệ sản xuất và lực lượng sản xuất trong điều kiện kinh tế số. Thứ hai, CMCN 4.0 tác động sâu rộng đến Việt Nam, thúc đẩy hiện đại hóa lực lượng sản xuất nhưng cũng gây ra áp lực lớn về cơ cấu lao động và sự phụ thuộc công nghệ \cite{nguyen2020cach,pham2019cong}. Thứ ba, thực trạng tại Việt Nam cho thấy chúng ta đã có những bước đi đầu tiên ấn tượng trong chuyển đổi số, song vẫn còn những mâu thuẫn giữa yêu cầu hiện đại hóa với trình độ nhân lực và thể chế còn nhiều điểm nghẽn \cite{baocao2025q3,diemnghenhethche}.
-
-Để thực hiện thành công mục tiêu trở thành nước phát triển có thu nhập cao vào năm 2045 \cite{dangcsvn2021vankin,nghiquyet29}, Việt Nam không có con đường nào khác ngoài việc kiên định mục tiêu CNH-HĐH gắn với CMCN 4.0. Việc triển khai đồng bộ các giải pháp từ phát triển hạ tầng số, nâng cao chất lượng nguồn nhân lực đến hoàn thiện thể chế kinh tế thị trường định hướng xã hội chủ nghĩa là yêu cầu cấp bách \cite{hoang2019chuyen,phattriennhanluc}. Với sự lãnh đạo đúng đắn của Đảng, sự quản lý của Nhà nước và tinh thần đổi mới sáng tạo của cộng đồng doanh nghiệp, Việt Nam hoàn toàn có thể tận dụng thời cơ lịch sử này để bứt phá, xây dựng một nền kinh tế độc lập, tự chủ và giàu mạnh.
-
-\newpage
-% --- TÀI LIỆU THAM KHẢO ---
-\renewcommand{\refname}{Tài liệu tham khảo}
-\bibliographystyle{ieeetr}
-\bibliography{refs}
 
 \end{document}

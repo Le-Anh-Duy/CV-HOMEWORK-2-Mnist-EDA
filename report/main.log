@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.14)  13 MAR 2026 00:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.14)  14 MAR 2026 01:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -776,8 +776,8 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 284.
 )
 \Hy@SectionHShift=\skip57
-)
-LaTeX Font Info:    Trying to load font information for T5+ptm on input line 34.
+) (eda_stats.tex)
+LaTeX Font Info:    Trying to load font information for T5+ptm on input line 41.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/vntex\t5ptm.fd
 File: t5utm.fd 2005/08/24 Fontinst v1.929 font definitions for T5/ptm.
 ) (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
@@ -789,26 +789,26 @@ Package babel Info: 'vietnamese' activates 'vietnamese' shorthands.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for T5/cmr/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 34.
-LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T5/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -866,49 +866,49 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 34.
+Package hyperref Info: Link coloring OFF on input line 41.
  (main.out) (main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-<logo.png, id=169, 1820.8025pt x 1493.58pt>
+<logo.png, id=134, 1820.8025pt x 1493.58pt>
 File: logo.png Graphic file (type png)
 <use logo.png>
-Package pdftex.def Info: logo.png  used on input line 63.
+Package pdftex.def Info: logo.png  used on input line 70.
 (pdftex.def)             Requested size: 136.57462pt x 112.01366pt.
-LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 73.
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 78.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 73.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 78.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 73.
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 78.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 73.
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 78.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 73.
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 78.
  (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 73.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 73.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 73.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 78.
  [1
 
 {C:/Users/duyla/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/vntex/t5.enc} <./logo.png>] (main.toc
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.21 ...v√† th·ªã tr∆∞·ªùng}{13}{subsection.3.1.3}
+l.26 ...·ªìng C·∫•u Tr√∫c (SSIM)}{12}{section.0.7}
                                                   % [1
 
 ])
@@ -916,150 +916,118 @@ l.21 ...v√† th·ªã tr∆∞·ªùng}{13}{subsection.3.1.3}
 \openout5 = `main.toc'.
 
  [2]
-
-LaTeX Warning: Citation `dangcsvn2021vankin' on page 3 undefined on input line 131.
-
-[3] [4]
-Ch\uhorn \ohorn ng 1.
-
-LaTeX Warning: Citation `tran2021kinh' on page 5 undefined on input line 164.
-
-
-LaTeX Warning: Citation `mac1974t∆∞' on page 5 undefined on input line 164.
-
-[5
-
-]
-
-LaTeX Warning: Citation `lenin1976c√¥ng' on page 6 undefined on input line 172.
-
-[6] [7]
-Ch\uhorn \ohorn ng 2.
-
-LaTeX Warning: Citation `vu2018phat' on page 8 undefined on input line 199.
-
-
-LaTeX Warning: Citation `nguyen2020cach' on page 8 undefined on input line 199.
-
-[8
-
-]
-
-LaTeX Warning: Citation `kinhtesonhandan' on page 9 undefined on input line 213.
-
-
-LaTeX Warning: Citation `hoang2019chuyen' on page 9 undefined on input line 213.
-
-[9]
-
-LaTeX Warning: Citation `dangcsvn2021vankin' on page 10 undefined on input line 243.
-
-[10] [11]
-Ch\uhorn \ohorn ng 3.
-
-LaTeX Warning: Citation `baocao2025q3' on page 12 undefined on input line 256.
-
-
-LaTeX Warning: Citation `congngchebien2024' on page 12 undefined on input line 256.
-
-[12
-
-] [13]
-
-LaTeX Warning: Citation `baocao2024q4' on page 14 undefined on input line 282.
-
-
-LaTeX Warning: Citation `le2020nang' on page 14 undefined on input line 282.
-
-
-LaTeX Warning: Citation `apdungcongnghe2024' on page 14 undefined on input line 288.
-
-[14]
-
-LaTeX Warning: Citation `phattriennhanluc' on page 15 undefined on input line 298.
-
-
-LaTeX Warning: Citation `tran2020nguon' on page 15 undefined on input line 298.
-
-
-LaTeX Warning: Citation `diemnghenhethche' on page 15 undefined on input line 304.
-
-
-Overfull \hbox (6.45978pt too wide) in paragraph at lines 308--308
-|[]\T5/ptm/b/n/17.28 Nh˙ng m•u thu®n v† vßn ^^_∑ nÍi b™t trong bËi c£nh CMCN
+LaTeX Font Info:    Trying to load font information for T5+lmtt on input line 116.
+ (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/lm\t5lmtt.fd
+File: t5lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 116.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 116.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 116.
+ [3{C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-t5.enc}{C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+<../figures/label_distribution.png, id=200, 1084.05pt x 289.08pt>
+File: ../figures/label_distribution.png Graphic file (type png)
+<use ../figures/label_distribution.png>
+Package pdftex.def Info: ../figures/label_distribution.png  used on input line 151.
+(pdftex.def)             Requested size: 409.71692pt x 109.25604pt.
+ [4 <../figures/label_distribution.png>]
+<../figures/pixel_histogram_digit_pneumonia.png, id=212, 1156.32pt x 289.08pt>
+File: ../figures/pixel_histogram_digit_pneumonia.png Graphic file (type png)
+<use ../figures/pixel_histogram_digit_pneumonia.png>
+Package pdftex.def Info: ../figures/pixel_histogram_digit_pneumonia.png  used on input line 168.
+(pdftex.def)             Requested size: 432.48051pt x 108.11801pt.
+<../figures/digit_pixel_value_pie.png, id=213, 361.35pt x 361.35pt>
+File: ../figures/digit_pixel_value_pie.png Graphic file (type png)
+<use ../figures/digit_pixel_value_pie.png>
+Package pdftex.def Info: ../figures/digit_pixel_value_pie.png  used on input line 175.
+(pdftex.def)             Requested size: 250.38564pt x 250.38489pt.
+ [5 <../figures/pixel_histogram_digit_pneumonia.png> <../figures/digit_pixel_value_pie.png>]
+<../figures/mean_digit.png, id=226, 687.5286pt x 298.4751pt>
+File: ../figures/mean_digit.png Graphic file (type png)
+<use ../figures/mean_digit.png>
+Package pdftex.def Info: ../figures/mean_digit.png  used on input line 192.
+(pdftex.def)             Requested size: 409.71692pt x 177.87497pt.
+<../figures/mean_fashion.png, id=227, 687.5286pt x 298.4751pt>
+File: ../figures/mean_fashion.png Graphic file (type png)
+<use ../figures/mean_fashion.png>
+Package pdftex.def Info: ../figures/mean_fashion.png  used on input line 199.
+(pdftex.def)             Requested size: 409.71692pt x 177.87497pt.
+ [6 <../figures/mean_digit.png>]
+<../figures/mean_pneumonia.png, id=238, 241.1409pt x 151.0443pt>
+File: ../figures/mean_pneumonia.png Graphic file (type png)
+<use ../figures/mean_pneumonia.png>
+Package pdftex.def Info: ../figures/mean_pneumonia.png  used on input line 206.
+(pdftex.def)             Requested size: 273.14923pt x 171.10213pt.
+<../figures/pneumonia_difference_heatmap.png, id=239, 289.08pt x 289.08pt>
+File: ../figures/pneumonia_difference_heatmap.png Graphic file (type png)
+<use ../figures/pneumonia_difference_heatmap.png>
+Package pdftex.def Info: ../figures/pneumonia_difference_heatmap.png  used on input line 213.
+(pdftex.def)             Requested size: 250.38564pt x 250.38599pt.
+ [7 <../figures/mean_fashion.png> <../figures/mean_pneumonia.png>]
+Overfull \hbox (10.51836pt too wide) in paragraph at lines 226--227
+\T5/ptm/m/n/12 ChÂn ng®u nhi∂n 5 £nh Digit, 5 £nh Fash-ion v† 5 £nh Pneu-mo-nia, °p dˆng thu™t to°n \T5/lmtt/m/n/12 cv2.Canny()
  []
 
-[15] [16] [17]
-Ch\uhorn \ohorn ng 4.
+[8 <../figures/pneumonia_difference_heatmap.png>]
+<../figures/canny_fashion_pneumonia.png, id=257, 1734.48pt x 289.08pt>
+File: ../figures/canny_fashion_pneumonia.png Graphic file (type png)
+<use ../figures/canny_fashion_pneumonia.png>
+Package pdftex.def Info: ../figures/canny_fashion_pneumonia.png  used on input line 233.
+(pdftex.def)             Requested size: 432.48051pt x 72.08014pt.
+<../figures/hog_comparison.png, id=262, 578.16pt x 650.43pt>
+File: ../figures/hog_comparison.png Graphic file (type png)
+<use ../figures/hog_comparison.png>
+Package pdftex.def Info: ../figures/hog_comparison.png  used on input line 253.
+(pdftex.def)             Requested size: 386.96027pt x 435.3293pt.
+ [9 <../figures/canny_fashion_pneumonia.png>]
+<../figures/glcm_boxplot.png, id=271, 722.7pt x 289.08pt>
+File: ../figures/glcm_boxplot.png Graphic file (type png)
+<use ../figures/glcm_boxplot.png>
+Package pdftex.def Info: ../figures/glcm_boxplot.png  used on input line 260.
+(pdftex.def)             Requested size: 386.96027pt x 154.78639pt.
+ [10 <../figures/hog_comparison.png>] [11 <../figures/glcm_boxplot.png>]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 281.
+ (C:\Users\duyla\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+<../figures/tsne_comparison.png, id=292, 1084.05pt x 361.35pt>
+File: ../figures/tsne_comparison.png Graphic file (type png)
+<use ../figures/tsne_comparison.png>
+Package pdftex.def Info: ../figures/tsne_comparison.png  used on input line 288.
+(pdftex.def)             Requested size: 409.71692pt x 136.57007pt.
 
-LaTeX Warning: Citation `nghiquyet29' on page 18 undefined on input line 345.
+Overfull \hbox (38.65938pt too wide) in paragraph at lines 297--298
+[]\T5/ptm/m/n/12 SSIM ^^_o m˘c ^^_Î giËng nhau theo cßu trÛc, vÓi cÊng th˘c chu©n: $[]\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 x; y\OT1/ztmcm/m/n/12 ) = []$\T5/ptm/m/n/12 .
+ []
 
-
-LaTeX Warning: Citation `cnhhdh2025' on page 18 undefined on input line 345.
-
-[18
-
-]
-
-LaTeX Warning: Citation `fdithehe' on page 19 undefined on input line 359.
-
-
-LaTeX Warning: Citation `dieukiencnhhdh' on page 19 undefined on input line 359.
-
-[19] [20] [21]
-
-LaTeX Warning: Citation `tran2021kinh' on page 22 undefined on input line 397.
-
-
-LaTeX Warning: Citation `nguyen2020cach' on page 22 undefined on input line 397.
-
-
-LaTeX Warning: Citation `pham2019cong' on page 22 undefined on input line 397.
-
-
-LaTeX Warning: Citation `baocao2025q3' on page 22 undefined on input line 397.
-
-
-LaTeX Warning: Citation `diemnghenhethche' on page 22 undefined on input line 397.
-
-
-LaTeX Warning: Citation `dangcsvn2021vankin' on page 22 undefined on input line 399.
-
-
-LaTeX Warning: Citation `nghiquyet29' on page 22 undefined on input line 399.
-
-
-LaTeX Warning: Citation `hoang2019chuyen' on page 22 undefined on input line 399.
-
-
-LaTeX Warning: Citation `phattriennhanluc' on page 22 undefined on input line 399.
-
-[22]
-No file main.bbl.
-(main.aux)
+[12 <../figures/tsne_comparison.png>] [13]
+<../figures/pneumonia_outliers.png, id=309, 722.7pt x 289.08pt>
+File: ../figures/pneumonia_outliers.png Graphic file (type png)
+<use ../figures/pneumonia_outliers.png>
+Package pdftex.def Info: ../figures/pneumonia_outliers.png  used on input line 334.
+(pdftex.def)             Requested size: 364.19667pt x 145.67767pt.
+ [14 <../figures/pneumonia_outliers.png>] (main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: DBAA78FE4CF60C9A8F239F4B5997C372;17532.
+(rerunfilecheck)             Checksum: 6999862E49972FD3B3242BEBF2DD47C9;5113.
  ) 
 Here is how much of TeX's memory you used:
- 16887 strings out of 467866
- 282952 string characters out of 5418325
- 737327 words of memory out of 5000000
- 45424 multiletter control sequences out of 15000+600000
- 663715 words of font info for 78 fonts, out of 8000000 for 9000
+ 17130 strings out of 467866
+ 289179 string characters out of 5418325
+ 734755 words of memory out of 5000000
+ 45627 multiletter control sequences out of 15000+600000
+ 694308 words of font info for 130 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 94i,10n,93p,1779b,612s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmb8v.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmr8v.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmri8v.pfb>
-Output written on main.pdf (23 pages, 398541 bytes).
+ 94i,9n,93p,913b,610s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmb8v.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmr8v.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb><C:/Users/duyla/AppData/Local/Programs/MiKTeX/fonts/type1/vntex/urwvn/utmri8v.pfb>
+Output written on main.pdf (15 pages, 3314234 bytes).
 PDF statistics:
- 356 PDF objects out of 1000 (max. 8388607)
- 64 named destinations out of 1000 (max. 500000)
- 346 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 381 PDF objects out of 1000 (max. 8388607)
+ 69 named destinations out of 1000 (max. 500000)
+ 334 words of extra memory for PDF output out of 10000 (max. 10000000)
 
